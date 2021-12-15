@@ -27,7 +27,7 @@ Example below of this working:
 This is trimmed down code that all it will do is console.log('marker in bounds') when marker is in bounds
 
 
-`"use strict";
+```"use strict";
 window.onload = function () {
   leafletmap();
 };
@@ -122,8 +122,4 @@ function mapdata(map, data) {
 
 
 
-}
-
-
-
-`
+}```
