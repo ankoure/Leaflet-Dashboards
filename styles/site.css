@@ -1,7 +1,16 @@
 #map_container {
     width: 600px;
     height: 600px;
+    float: left;
+    clear: left;
     
+}
+
+#controls{
+    position: absolute;
+    float: left;
+    clear: left;
+    bottom: 50%;
 }
 
 #magnitude_container{
@@ -9,6 +18,14 @@
     justify-content: right;
     align-content: center;
     padding-right: 15%;
+    float: right;
+    clear: right;
+    width: 30%;
+}
+#list{
+    float: right;
+    clear: right;
+    width: 30%;
 }
 #magnitude{
     font-size: large;
@@ -22,3 +39,5 @@ table,th,td{
 #flexbox{
     display: flex;
 }
+
+

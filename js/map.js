@@ -20,7 +20,7 @@ function leafletmap() {
   //let requestURL = "./js/reduced_earthquakes2.geojson";
   //all month
   //let requestURL = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson';
-  let requestURL = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson'
+  let requestURL = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson'
   fetch(requestURL)
     .then(function(response) {
       return response.json(); // this handles the JSON parse
@@ -85,7 +85,7 @@ function mapdata(map, data) {
       for(let i = 0; i < layers.length; i++) {
         let marker = layers[i];
         let feature = layers[i].feature; // get the feature data from the layer
-        let rowEl = null;
+        let rowEl = null; //declares empty variable for row insertion
         
   
         
@@ -95,31 +95,45 @@ function mapdata(map, data) {
         //table creation based on https://www.codeproject.com/Articles/1036671/Creating-HTML-Tables-with-JavaScript-DOM-Methods
         if(map.getBounds().contains(marker.getLatLng())) {
           if(counter == 0 ){
+            //inserts title row for table, then increments counter variable so rest of data
           rowEl = table.insertRow();
           rowEl.insertCell().textContent = 'Location Name' ;      
           rowEl.insertCell().textContent = 'Magnitude' ;
           rowEl.insertCell().textContent = 'Depth (Km)';
           counter++;
-          console.log('0 index')
-          }else{
-          //instead of using sum now create table
+          //now need to insert current [i] or else it will be skipped
           rowEl = table.insertRow();  // DOM method for creating table rows
-          // rowEl.insertCell().textContent = "table cell "+ i +"-1" ;      
-          // rowEl.insertCell().textContent = "table cell "+ i +"-2" ; 
           rowEl.insertCell().textContent = feature.properties.place ;      
           rowEl.insertCell().textContent = feature.properties.mag ;
           rowEl.insertCell().textContent = feature.geometry.coordinates[2];
+          rowEl.addEventListener('click',function(event){
+            let centerpoint = [feature.geometry.coordinates[1],feature.geometry.coordinates[0]];
+            map.setView(centerpoint,9);
+            //would like to change style color to help users see which marker is being clicked
+            //code from https://gis.stackexchange.com/questions/350186/changing-circle-marker-color-in-leaflet
+            //this code works but need a delay then to set back to original color
+            //marker.setStyle({fillColor: 'green'});
+            //essentially need time delay here
+            //marker.setStyle({fillColor: '#ff7800'});
+            
+
+
+          })
+          }else{
+          //instead of using sum now create table
+          rowEl = table.insertRow();  // DOM method for creating table rows
+          rowEl.insertCell().textContent = feature.properties.place ;      
+          rowEl.insertCell().textContent = feature.properties.mag ;
+          rowEl.insertCell().textContent = feature.geometry.coordinates[2];
+          rowEl.addEventListener('click',function(event){
+            let centerpoint = [feature.geometry.coordinates[1],feature.geometry.coordinates[0]];
+            map.setView(centerpoint,9);
+          })
           }
          
         }
       }
       tablediv.appendChild(table);
-
-
-
-
-
-
       }
       tablecreator(geolayer);
 
@@ -139,6 +153,15 @@ function mapdata(map, data) {
     
    
   });
+
+  //basic event to re-center map onclick
+  let home = document.getElementById("Home");
+  let zoomLevel = 4;
+  let centerpoint = [37.693058942425786, -97.32539007099342];
+  home.addEventListener("click",function(event){
+    map.setView(centerpoint,zoomLevel);
+
+  })
 
   // Calculate initial info with the default map view (before any movements or zooms)
   let initialAvgMagnitude = calcmagnitudes(map, geolayer);
