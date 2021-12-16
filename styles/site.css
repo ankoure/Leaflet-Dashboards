@@ -1,0 +1,24 @@
+#map_container {
+    width: 600px;
+    height: 600px;
+    
+}
+
+#magnitude_container{
+    display: flex;
+    justify-content: right;
+    align-content: center;
+    padding-right: 15%;
+}
+#magnitude{
+    font-size: large;
+
+}
+table,th,td{
+    border:1px solid black;
+
+}
+
+#flexbox{
+    display: flex;
+}
