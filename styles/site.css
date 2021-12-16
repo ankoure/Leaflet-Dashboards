@@ -1,5 +1,5 @@
 #map_container {
-    width: 600px;
+    width: 45%;
     height: 600px;
     float: left;
     clear: left;
@@ -20,12 +20,12 @@
     padding-right: 15%;
     float: right;
     clear: right;
-    width: 30%;
+    width: 10%;
 }
 #list{
     float: right;
     clear: right;
-    width: 30%;
+    width: 45%;
 }
 #magnitude{
     font-size: large;
