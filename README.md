@@ -18,8 +18,8 @@ Basic steps for creating a new function that will update on map change.
 3. Use .getlayers() method on geoJSON object to get it's layer group
 4. Iterate through layer group so that each marker is tested 
 5. Test if marker is within map boundaries
-5a. Do something!
-6.Ensure that your function is being called from the map.on("zoomend moveend") function
+6. Do something!
+7.Ensure that your function is being called from the map.on("zoomend moveend") function
 
 
 Example below of this working:
