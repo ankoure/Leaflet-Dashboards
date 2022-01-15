@@ -7,7 +7,8 @@ function leafletmap() {
     let zoomLevel = 4;
     let centerpoint = [37.693058942425786, -97.32539007099342];
     let map = L.map("map_container", {
-        preferCanvas: true
+        preferCanvas: true,
+        zoomControl: false
     }).setView(centerpoint, zoomLevel);
     let attributionHtml = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
@@ -25,7 +26,7 @@ function leafletmap() {
             return response.json(); // this handles the JSON parse
         })
         .then(function(data) {
-            console.log(data);
+            //console.log(data);
             mapdata(map, data);
         })
         .catch(function(error) {
@@ -41,22 +42,82 @@ function mapdata(map, data) {
     // See also: https://leafletjs.com/reference.html#geojson
     //geoJSON to CircleMarker As inspired by: https://stackoverflow.com/questions/25364072/how-to-use-circle-markers-with-leaflet-tilelayer-geojson
     //inspiration for cirlce marker https://stackoverflow.com/questions/43015854/large-dataset-of-markers-or-dots-in-leaflet
-    var geojsonMarkerOptions = {
-        radius: 8,
-        fillColor: "#ff7800",
-        color: "#000",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
-    };
+
+    function getColor(mag) {
+        let magnumber = parseFloat(mag);
+        if(magnumber >= 0 && magnumber <= 1){
+            return "#fff5f0";
+        }else if(magnumber > 1 && magnumber <= 2){
+            return "#fee0d2";
+        }else if (magnumber <= 3 && magnumber > 2){
+            return "#fcbba1";
+        }else if(magnumber <= 4 && magnumber >3){
+            return "#fc9272";
+        }else if(magnumber <= 5 && magnumber >4){
+            return "#fb6a4a";
+        }else if(magnumber <= 6 && magnumber > 5){
+            return "#ef3b2c";
+        }else if(magnumber <= 7 && magnumber > 6){
+            return "#cb181d";
+        }else if(magnumber <= 8 && magnumber > 9){
+            return "#a50f15";
+        }else if(magnumber <= 9 && magnumber > 10){
+            return "#67000d";
+        }
+        //https://stackoverflow.com/questions/44206050/leaflet-change-circle-marker-color-based-on-text-field
+
+
+    //     switch (magnumber) {
+    //       case magnumber >= 0 && magnumber <= 1:
+    //         return  'orange';
+    //         break;
+    //       case magnumber > 1 || magnumber <= 2:
+    //         return 'green';
+    //         break;
+    //       case magnumber <= 3 || magnumber > 2:
+    //         return 'blue';
+    //         break;
+    //       case magnumber <= 4 && magnumber >3:
+    //         return 'green';
+    //         break;
+    //       case magnumber <= 5 && magnumber >4:
+    //           return 'yellow';
+    //           break;
+    //       case magnumber <= 6 && magnumber > 5:
+    //         return 'blue';
+    //         break;
+    //       case magnumber <= 7 && magnumber > 6:
+    //           return 'red';
+    //           break;
+    //       case magnumber <= 8 && magnumber > 9:
+    //           return 'brown';
+    //           break;
+    //       case magnumber <= 9 && magnumber > 10:
+    //           return 'black';
+    //           break;
+              
+    //       default:
+    //         //console.log(mag+" "+magnumber);
+    //         return 'blue';
+            
+    //     }
+      }
+
+
     let geolayer = L.geoJSON(data, {
         pointToLayer: function(feature, latlng) {
-            return L.circleMarker(latlng, geojsonMarkerOptions);
+            return L.circleMarker(latlng, {radius: 8, 
+                fillOpacity: 1, 
+                color: 'black', 
+                fillColor: getColor(feature.properties.mag), 
+                weight: 1});
         },
         onEachFeature: function(feature, layer) {
             layer.bindPopup("<h1>" + feature.properties.place + "</h1><p>Magnitude: " + feature.properties.mag + "</p>" + "<p>Depth:" + feature.geometry.coordinates[2] + " km</p>");
         },
     }).addTo(map);
+
+ 
 
     //gets and sets magnitude div
     //currently works but need to 'clear' out old magnitude before appending 
@@ -133,32 +194,33 @@ function mapdata(map, data) {
 
 
 
+
+
     // Update some info when the map is moved or zoomed
     map.on("zoomend moveend", function(event) {
         var bounds = event.target.getBounds();
-        console.log("mapevent", event.type, "bounds", bounds);
+        //console.log("mapevent", event.type, "bounds", bounds);
 
         let avgMagnitude = calcmagnitudes(map, geolayer);
-        console.log("recalculated avg magnitude:", avgMagnitude);
+        //console.log("recalculated avg magnitude:", avgMagnitude);
         magnitudecounter(parseFloat(avgMagnitude).toFixed(2));
         tablecreator(geolayer);
 
 
     });
 
-    //basic event to re-center map onclick
-    let home = document.getElementById("Home");
-    let zoomLevel = 4;
-    let centerpoint = [37.693058942425786, -97.32539007099342];
-    home.addEventListener("click", function(event) {
-        map.setView(centerpoint, zoomLevel);
+    //function to add home button to controls
+    //https://gis.stackexchange.com/questions/127286/home-button-leaflet-map/127383
+    zoomhome(map);
 
-    })
 
     // Calculate initial info with the default map view (before any movements or zooms)
     let initialAvgMagnitude = calcmagnitudes(map, geolayer);
-    console.log("calculated initial avg magnitude:", initialAvgMagnitude);
+    //console.log("calculated initial avg magnitude:", initialAvgMagnitude);
     magnitudecounter(parseFloat(initialAvgMagnitude).toFixed(2));
+
+    
+    
 
 
 }
@@ -194,7 +256,95 @@ function calcmagnitudes(map, geolayer) {
     } else {
         avg = sum / count;
     }
-    console.log(`calcmagnitudes sum: ${sum} count: ${count} avg: ${avg}`);
+    //console.log(`calcmagnitudes sum: ${sum} count: ${count} avg: ${avg}`);
 
     return avg;
+}
+
+function zoomhome(map){
+    var lat = 37.706735542454176;
+    var lng = -97.35340198995009;
+    var zoom = 3;
+
+    // custom zoom bar control that includes a Zoom Home function
+    L.Control.zoomHome = L.Control.extend({
+        options: {
+            position: 'topright',
+            zoomInText: '+',
+            zoomInTitle: 'Zoom in',
+            zoomOutText: '-',
+            zoomOutTitle: 'Zoom out',
+            zoomHomeText: '<i class="fa fa-home" style="line-height:1.65;"></i>',
+            zoomHomeTitle: 'Zoom home'
+        },
+
+        onAdd: function (map) {
+            var controlName = 'gin-control-zoom',
+                container = L.DomUtil.create('div', controlName + ' leaflet-bar'),
+                options = this.options;
+
+            this._zoomInButton = this._createButton(options.zoomInText, options.zoomInTitle,
+            controlName + '-in', container, this._zoomIn);
+            this._zoomHomeButton = this._createButton(options.zoomHomeText, options.zoomHomeTitle,
+            controlName + '-home', container, this._zoomHome);
+            this._zoomOutButton = this._createButton(options.zoomOutText, options.zoomOutTitle,
+            controlName + '-out', container, this._zoomOut);
+
+            this._updateDisabled();
+            map.on('zoomend zoomlevelschange', this._updateDisabled, this);
+
+            return container;
+        },
+
+        onRemove: function (map) {
+            map.off('zoomend zoomlevelschange', this._updateDisabled, this);
+        },
+
+        _zoomIn: function (e) {
+            this._map.zoomIn(e.shiftKey ? 3 : 1);
+        },
+
+        _zoomOut: function (e) {
+            this._map.zoomOut(e.shiftKey ? 3 : 1);
+        },
+
+        _zoomHome: function (e) {
+            map.setView([lat, lng], zoom);
+        },
+
+        _createButton: function (html, title, className, container, fn) {
+            var link = L.DomUtil.create('a', className, container);
+            link.innerHTML = html;
+            link.href = '#';
+            link.title = title;
+
+            L.DomEvent.on(link, 'mousedown dblclick', L.DomEvent.stopPropagation)
+                .on(link, 'click', L.DomEvent.stop)
+                .on(link, 'click', fn, this)
+                .on(link, 'click', this._refocusOnMap, this);
+
+            return link;
+        },
+
+        _updateDisabled: function () {
+            var map = this._map,
+                className = 'leaflet-disabled';
+
+            L.DomUtil.removeClass(this._zoomInButton, className);
+            L.DomUtil.removeClass(this._zoomOutButton, className);
+
+            if (map._zoom === map.getMinZoom()) {
+                L.DomUtil.addClass(this._zoomOutButton, className);
+            }
+            if (map._zoom === map.getMaxZoom()) {
+                L.DomUtil.addClass(this._zoomInButton, className);
+            }
+        }
+    });
+    // add the new control to the map
+    var zoomHome = new L.Control.zoomHome();
+    zoomHome.addTo(map);
+
+
+
 }
