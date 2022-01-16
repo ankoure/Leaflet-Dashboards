@@ -17,6 +17,10 @@ function leafletmap() {
         attribution: attributionHtml
     }).addTo(map);
 
+       //function to add home button to controls
+    //https://gis.stackexchange.com/questions/127286/home-button-leaflet-map/127383
+    zoomhome(map);
+
     // Request JSON data via AJAX.
     // Uses the browser's modern Fetch API to do the AJAX call.
     // See also: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
@@ -45,23 +49,25 @@ function mapdata(map, data) {
 
     function getColor(mag) {
         let magnumber = parseFloat(mag);
-        if(magnumber >= 0 && magnumber <= 1){
+        if(magnumber >= 0 && magnumber < 1){
             return "#fff5f0";
-        }else if(magnumber > 1 && magnumber <= 2){
-            return "#fee0d2";
-        }else if (magnumber <= 3 && magnumber > 2){
+        }else if(magnumber >= 1 && magnumber < 2){
+            return "#fee0d2";   
+        }else if(magnumber >= 2 && magnumber < 3){
             return "#fcbba1";
-        }else if(magnumber <= 4 && magnumber >3){
+        }else if(magnumber >= 3 && magnumber < 4 ){
             return "#fc9272";
-        }else if(magnumber <= 5 && magnumber >4){
+        }else if(magnumber >= 4 && magnumber < 5 ){
             return "#fb6a4a";
-        }else if(magnumber <= 6 && magnumber > 5){
+        }else if(magnumber >= 5 && magnumber < 6){
             return "#ef3b2c";
-        }else if(magnumber <= 7 && magnumber > 6){
+        }else if(magnumber >= 6 && magnumber < 7){
             return "#cb181d";
-        }else if(magnumber <= 8 && magnumber > 9){
+        }else if(magnumber >= 7 && magnumber < 8){
+            return "#cb301d"
+        }else if(magnumber >= 8 && magnumber < 9){
             return "#a50f15";
-        }else if(magnumber <= 9 && magnumber > 10){
+        }else if(magnumber >= 9 && magnumber < 10){
             return "#67000d";
         }
         //https://stackoverflow.com/questions/44206050/leaflet-change-circle-marker-color-based-on-text-field
@@ -116,6 +122,27 @@ function mapdata(map, data) {
             layer.bindPopup("<h1>" + feature.properties.place + "</h1><p>Magnitude: " + feature.properties.mag + "</p>" + "<p>Depth:" + feature.geometry.coordinates[2] + " km</p>");
         },
     }).addTo(map);
+
+    //declare legend 
+    const legend = L.control({position: 'bottomright'});
+    
+    legend.onAdd = function (map) {
+
+    const div = L.DomUtil.create('div', 'info legend'),
+        mag = [0, 1, 2, 3, 4, 5, 6, 7,8,9,10],
+        labels = [];
+
+    // loop through our density intervals and generate a label with a colored square for each interval
+    for (var i = 0; i < mag.length -1; i++) {
+        div.innerHTML +=
+            '<i style="background:' + getColor(mag[i]) + '"></i> ' +
+            mag[i] + ('&ndash;' + mag[i + 1] + '<br>');
+    }
+
+    return div;
+};
+
+legend.addTo(map);
 
  
 
@@ -209,9 +236,7 @@ function mapdata(map, data) {
 
     });
 
-    //function to add home button to controls
-    //https://gis.stackexchange.com/questions/127286/home-button-leaflet-map/127383
-    zoomhome(map);
+ 
 
 
     // Calculate initial info with the default map view (before any movements or zooms)
