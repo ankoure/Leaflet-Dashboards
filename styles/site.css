@@ -1,10 +1,10 @@
-body{
-    width: 100vw;
+html{
     height: 100vh;
+    width: 100vw;
 }
 #map_container {
     width: 60vw;
-    height: 100vh;    
+    height: 97vh;    
 }
 .leaflet-bar a { background-color: #fff; border-bottom: 1px solid #ccc; color: #444; display: block; height: 26px; width: 26px; line-height: 1.45 !important; text-align: center; text-decoration: none; font: bold 18px 'Lucida Console', Monaco, monospace; }
 .info {
@@ -33,17 +33,15 @@ body{
 #table{
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
-    font-size: 4vh;
+    font-size: 12pt;
 
     
   }
   tbody {
-    height: 100vh;
+    height: 97vh;
     width: 40vw;
     display: block;
-    overflow-y: scroll;
-    border: 1px solid rgb(196, 49, 118);
-   
+    overflow-y: scroll;   
   }
 
 td{
