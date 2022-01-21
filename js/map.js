@@ -71,47 +71,17 @@ function mapdata(map, data) {
             return "#67000d";
         }
         //https://stackoverflow.com/questions/44206050/leaflet-change-circle-marker-color-based-on-text-field
-
-
-    //     switch (magnumber) {
-    //       case magnumber >= 0 && magnumber <= 1:
-    //         return  'orange';
-    //         break;
-    //       case magnumber > 1 || magnumber <= 2:
-    //         return 'green';
-    //         break;
-    //       case magnumber <= 3 || magnumber > 2:
-    //         return 'blue';
-    //         break;
-    //       case magnumber <= 4 && magnumber >3:
-    //         return 'green';
-    //         break;
-    //       case magnumber <= 5 && magnumber >4:
-    //           return 'yellow';
-    //           break;
-    //       case magnumber <= 6 && magnumber > 5:
-    //         return 'blue';
-    //         break;
-    //       case magnumber <= 7 && magnumber > 6:
-    //           return 'red';
-    //           break;
-    //       case magnumber <= 8 && magnumber > 9:
-    //           return 'brown';
-    //           break;
-    //       case magnumber <= 9 && magnumber > 10:
-    //           return 'black';
-    //           break;
-              
-    //       default:
-    //         //console.log(mag+" "+magnumber);
-    //         return 'blue';
-            
-    //     }
       }
+
+      //https://www.usgs.gov/faqs/what-depth-do-earthquakes-occur-what-significance-depth#:~:text=In%20order%20for%20an%20earthquake,the%20surface%20of%20the%20earth.
+      //link above for filtering out negative depth and mag
+      
 
 
     let geolayer = L.geoJSON(data, {
-        pointToLayer: function(feature, latlng) {
+        filter: function(feature) {
+            return feature.properties.mag >= 0 && feature.geometry.coordinates[2] >=0;
+        },pointToLayer: function(feature, latlng) {
             return L.circleMarker(latlng, {radius: 8, 
                 fillOpacity: 1, 
                 color: 'black', 
@@ -195,7 +165,7 @@ legend.addTo(map);
                         //would like to change style color to help users see which marker is being clicked
                         //code from https://gis.stackexchange.com/questions/350186/changing-circle-marker-color-in-leaflet
                         //this code works but need a delay then to set back to original color
-                        //marker.setStyle({fillColor: 'green'});
+                        // marker.setStyle({fillColor: 'green'});
                         //essentially need time delay here
                         //marker.setStyle({fillColor: '#ff7800'});
 
