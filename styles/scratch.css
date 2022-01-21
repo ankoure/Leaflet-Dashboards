@@ -1,0 +1,87 @@
+header nav ul{
+    list-style: none;
+    padding: 0;
+    margin-top: 0;
+
+}
+header nav ul li a:link,
+header nav ul li a:visited,
+header nav ul li a:hover,
+header nav ul li a:active{
+    background-color: var(--nav-bg-color);
+    color: var(--nav-color);
+    font-weight: block;
+    display: block;
+    text-decoration: none;
+    padding: 0.5em 0;
+    border-bottom: 2px solid transparent;
+    padding-left: 40px;
+
+}
+header nav ul li a:hover,
+header nav ul li a:active{
+    background-color: var(--nav-color);
+    color: var(--nav-bg-color);
+    text-decoration: underline;
+    border-bottom-color: var(--nav-bg-color);
+
+}
+
+
+
+/*Styles for Small Screens*/
+@media screen and (max-width:1023px) {
+    header nav{
+        background-image: url('../images/x-menu.svg');
+        background-repeat: no-repeat;
+        background-color: var(--nav-bg-color);
+    }
+    header nav.collapsed{
+        background-image: url('../images/pancake-menu.svg');
+    }
+    header nav.collapsed ul{
+        display: none;
+    }
+    
+}
+
+
+
+
+/*Styles for large screens */
+
+@media screen and (min-width: 1024px){
+    header nav{
+        background-color: var(--nav-bg-color);
+        padding-top: 0;
+    }
+    header nav ul{
+        display: flex;
+       
+
+    }
+    header nav ul li{
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: 10em;
+        background-color: var(--nav-bg-color);
+        text-align: center;
+    }
+    header nav ul li a:link,header nav ul li a:visited{
+        background-color: var(--nav-bg-color);
+        color: var(--nav-color);
+        font-weight: block;
+        display: block;
+        text-decoration: none;
+        border-bottom: 1vh solid transparent;
+
+    }
+    header nav ul li a:hover,header nav ul li a:active{
+        background-color: var(--nav-color);
+        color: var(--nav-bg-color);
+        text-decoration: underline;
+        border-bottom-color: var(--nav-bg-color);
+
+    }
+
+}

@@ -80,7 +80,7 @@ function mapdata(map, data) {
 
     let geolayer = L.geoJSON(data, {
         filter: function(feature) {
-            return feature.properties.mag >= 0 && feature.geometry.coordinates[2] >=0;
+            return feature.properties.mag >= 0 && feature.geometry.coordinates[2] >=0 && feature.properties.mag != null && feature.geometry.coordinates[2] != null ;
         },pointToLayer: function(feature, latlng) {
             return L.circleMarker(latlng, {radius: 8, 
                 fillOpacity: 1, 
@@ -157,8 +157,8 @@ legend.addTo(map);
                     //now need to insert current [i] or else it will be skipped
                     rowEl = table.insertRow(); // DOM method for creating table rows
                     rowEl.insertCell().textContent = feature.properties.place;
-                    rowEl.insertCell().textContent = feature.properties.mag;
-                    rowEl.insertCell().textContent = feature.geometry.coordinates[2];
+                    rowEl.insertCell().textContent = parseFloat(feature.properties.mag).toFixed(2);
+                    rowEl.insertCell().textContent = parseFloat(feature.geometry.coordinates[2]).toFixed(2);
                     rowEl.addEventListener('click', function(event) {
                         let centerpoint = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
                         map.setView(centerpoint, 9);
@@ -174,8 +174,8 @@ legend.addTo(map);
                     //instead of using sum now create table
                     rowEl = table.insertRow(); // DOM method for creating table rows
                     rowEl.insertCell().textContent = feature.properties.place;
-                    rowEl.insertCell().textContent = feature.properties.mag;
-                    rowEl.insertCell().textContent = feature.geometry.coordinates[2];
+                    rowEl.insertCell().textContent = parseFloat(feature.properties.mag).toFixed(2);
+                    rowEl.insertCell().textContent = parseFloat(feature.geometry.coordinates[2]).toFixed(2);
                     rowEl.addEventListener('click', function(event) {
                         let centerpoint = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
                         map.setView(centerpoint, 9);
